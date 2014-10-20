@@ -55,8 +55,11 @@ enable_testing()
 # Organize output files.  On Windows this also keeps .dll files next
 # to the .exe files that need them, making tests easy to run.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/lib)
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/lib)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/lib)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
 
 # --------------------------------------------------
 # Check for any necessary platform specific compiler flags
@@ -266,14 +269,14 @@ endif(BUILD_TESTING OR LAPACKE_WITH_TMG)
 # Export lapack targets, not including lapacke, from the
 # install tree, if any.
 set(_lapack_config_install_guard_target "")
-if(ALL_TARGETS)
-  install(EXPORT lapack-targets
-    DESTINATION lib/cmake/lapack-${LAPACK_VERSION})
+#if(ALL_TARGETS)
+#  install(EXPORT lapack-targets
+#    DESTINATION lib/cmake/lapack-${LAPACK_VERSION})
 
   # Choose one of the lapack targets to use as a guard for
   # lapack-config.cmake to load targets from the install tree.
-  list(GET ALL_TARGETS 0 _lapack_config_install_guard_target)
-endif()
+#  list(GET ALL_TARGETS 0 _lapack_config_install_guard_target)
+#endif()
 
 # Include cblas in targets exported from the build tree.
 if(CBLAS)
@@ -287,30 +290,30 @@ endif(LAPACKE)
 
 # Export lapack and lapacke targets from the build tree, if any.
 set(_lapack_config_build_guard_target "")
-if(ALL_TARGETS)
-  export(TARGETS ${ALL_TARGETS} FILE lapack-targets.cmake)
+#if(ALL_TARGETS)
+#  export(TARGETS ${ALL_TARGETS} FILE lapack-targets.cmake)
+#
+#  # Choose one of the lapack or lapacke targets to use as a guard
+#  # for lapack-config.cmake to load targets from the build tree.
+#  list(GET ALL_TARGETS 0 _lapack_config_build_guard_target)
+#endif()
 
-  # Choose one of the lapack or lapacke targets to use as a guard
-  # for lapack-config.cmake to load targets from the build tree.
-  list(GET ALL_TARGETS 0 _lapack_config_build_guard_target)
-endif()
-
-configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-version.cmake.in
-  ${LAPACK_BINARY_DIR}/lapack-config-version.cmake @ONLY)
-configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-build.cmake.in
-  ${LAPACK_BINARY_DIR}/lapack-config.cmake @ONLY)
+#configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-version.cmake.in
+#  ${LAPACK_BINARY_DIR}/lapack-config-version.cmake @ONLY)
+#configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-build.cmake.in
+#  ${LAPACK_BINARY_DIR}/lapack-config.cmake @ONLY)
 
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapack.pc.in ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc)
-  install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc
-  DESTINATION ${PKG_CONFIG_DIR}
-   )
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapack.pc.in ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc)
+#  install(FILES
+#  ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc
+#  DESTINATION ${PKG_CONFIG_DIR}
+#   )
 
-configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-install.cmake.in
-  ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake @ONLY)
-install(FILES
-  ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake
-  ${LAPACK_BINARY_DIR}/lapack-config-version.cmake
-  DESTINATION lib/cmake/lapack-${LAPACK_VERSION}
-  )
+#configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-install.cmake.in
+#  ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake @ONLY)
+#install(FILES
+#  ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake
+#  ${LAPACK_BINARY_DIR}/lapack-config-version.cmake
+#  DESTINATION lib/cmake/lapack-${LAPACK_VERSION}
+#  )

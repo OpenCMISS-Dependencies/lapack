@@ -433,3 +433,5 @@ list(REMOVE_DUPLICATES ALLOBJ)
 add_library(lapack ${ALLOBJ} ${ALLXOBJ})
 target_link_libraries(lapack ${BLAS_LIBRARIES} ${XBLAS_LIBRARY})
 lapack_install_library(lapack)
+
+export(TARGETS lapack FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/lapack-config.cmake)

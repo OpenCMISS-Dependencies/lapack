@@ -141,4 +141,6 @@ if(UNIX)
   target_link_libraries(blas m)
 endif()
 target_link_libraries(blas)
-lapack_install_library(blas)
+
+export(TARGETS blas FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/blas-config.cmake)
+#lapack_install_library(blas)
