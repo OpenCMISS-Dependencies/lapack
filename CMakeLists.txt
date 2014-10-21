@@ -3,6 +3,13 @@ project(LAPACK Fortran)
 
 set(LAPACK_VERSION 3.5.0)
 
+if (OPENCMISS_DEPENDENCIES_LIBRARIES)
+    SET(CMAKE_PREFIX_PATH ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR} ${CMAKE_PREFIX_PATH})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
+else()
+    SET(CMAKE_PREFIX_PATH ../cmake ${CMAKE_PREFIX_PATH})
+endif()
+
 # Configure the warning and code coverage suppression file
 configure_file( 
   "${LAPACK_SOURCE_DIR}/CTestCustom.cmake.in"
