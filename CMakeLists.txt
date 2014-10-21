@@ -10,6 +10,9 @@ else()
     SET(CMAKE_PREFIX_PATH ../cmake ${CMAKE_PREFIX_PATH})
 endif()
 
+SET(CMAKE_C_FLAGS "-O3")
+SET(CMAKE_Fortran_FLAGS "-fno-f2c -O3 -Q")
+
 # Configure the warning and code coverage suppression file
 configure_file( 
   "${LAPACK_SOURCE_DIR}/CTestCustom.cmake.in"
