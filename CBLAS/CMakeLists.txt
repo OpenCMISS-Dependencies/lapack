@@ -46,24 +46,24 @@ endif(NOT BLAS_FOUND)
 
 # Export cblas targets from the
 # install tree, if any.
-set(_cblas_config_install_guard_target "")
-if(ALL_TARGETS)
-  install(EXPORT cblas-targets
-    DESTINATION lib/cmake/cblas-${LAPACK_VERSION})
-  # Choose one of the cblas targets to use as a guard for
-  # cblas-config.cmake to load targets from the install tree.
-  list(GET ALL_TARGETS 0 _cblas_config_install_guard_target)
-endif()
+#set(_cblas_config_install_guard_target "")
+#if(ALL_TARGETS)
+#  install(EXPORT cblas-targets
+#    DESTINATION lib/cmake/cblas-${LAPACK_VERSION})
+#  # Choose one of the cblas targets to use as a guard for
+#  # cblas-config.cmake to load targets from the install tree.
+#  list(GET ALL_TARGETS 0 _cblas_config_install_guard_target)
+#endif()
 
 # Export cblas targets from the build tree, if any.
-set(_cblas_config_build_guard_target "")
-if(ALL_TARGETS)
-  export(TARGETS ${ALL_TARGETS} FILE cblas-targets.cmake)
+#set(_cblas_config_build_guard_target "")
+#if(ALL_TARGETS)
+#  export(TARGETS ${ALL_TARGETS} FILE cblas-targets.cmake)
 
   # Choose one of the cblas targets to use as a guard
   # for cblas-config.cmake to load targets from the build tree.
-  list(GET ALL_TARGETS 0 _cblas_config_build_guard_target)
-endif()
+#  list(GET ALL_TARGETS 0 _cblas_config_build_guard_target)
+#endif()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMAKE/cblas-config-version.cmake.in
   ${LAPACK_BINARY_DIR}/cblas-config-version.cmake @ONLY)

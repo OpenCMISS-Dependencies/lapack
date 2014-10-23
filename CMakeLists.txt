@@ -1,17 +1,18 @@
-cmake_minimum_required(VERSION 2.8.10)
-project(LAPACK Fortran)
-
-set(LAPACK_VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.0)
+PROJECT(LAPACK VERSION 3.5.0 LANGUAGES Fortran)
 
 if (OPENCMISS_DEPENDENCIES_LIBRARIES)
     SET(CMAKE_PREFIX_PATH ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR} ${CMAKE_PREFIX_PATH})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
 else()
     SET(CMAKE_PREFIX_PATH ../cmake ${CMAKE_PREFIX_PATH})
+    SET(OPENCMISS_DEPENDENCIES_CONFIGS_DIR ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
-SET(CMAKE_C_FLAGS "-O3")
-SET(CMAKE_Fortran_FLAGS "-fno-f2c -O3 -Q")
+SET(BUILD_TESTING ON)
+#SET(CMAKE_C_FLAGS "-O3")
+#SET(CMAKE_Fortran_FLAGS "-fno-f2c -O3 -Q")
 
 # Configure the warning and code coverage suppression file
 configure_file( 
@@ -206,7 +207,6 @@ else()
     CACHE STRING "Linker flags for shared libs" FORCE)
 endif( NOT LATESTLAPACK_FOUND )
 
-message(STATUS "BUILD TESTING : ${BUILD_TESTING}" )
 if(BUILD_TESTING)
   add_subdirectory(TESTING)
 endif(BUILD_TESTING)
@@ -217,12 +217,12 @@ option(LAPACKE "Build LAPACKE" OFF)
 
 # LAPACKE has also the interface to some routines from tmglib,
 # if LAPACKE_WITH_TMG is selected, we need to add those routines to LAPACKE
-option(LAPACKE_WITH_TMG "Build LAPACKE with tmglib routines" OFF)
+option(LAPACKE_WITH_TMG "Build LAPACKE with tmglib routines" ON)
 if (LAPACKE_WITH_TMG)
   set(LAPACKE ON)
   if(NOT BUILD_TESTING)
      add_subdirectory(TESTING/MATGEN)
-   endif(NOT BUILD_TESTING)
+  endif(NOT BUILD_TESTING)
 endif(LAPACKE_WITH_TMG)
 
 if(LAPACKE)
