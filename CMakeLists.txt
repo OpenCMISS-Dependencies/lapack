@@ -4,15 +4,11 @@ PROJECT(LAPACK VERSION 3.5.0 LANGUAGES Fortran)
 if (OPENCMISS_DEPENDENCIES_LIBRARIES)
     SET(CMAKE_PREFIX_PATH ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR} ${CMAKE_PREFIX_PATH})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
 else()
     SET(CMAKE_PREFIX_PATH ../cmake ${CMAKE_PREFIX_PATH})
     SET(OPENCMISS_DEPENDENCIES_CONFIGS_DIR ${CMAKE_CURRENT_BINARY_DIR})
+    SET(BUILD_TESTING ON)
 endif()
-
-SET(BUILD_TESTING ON)
-#SET(CMAKE_C_FLAGS "-O3")
-#SET(CMAKE_Fortran_FLAGS "-fno-f2c -O3 -Q")
 
 # Configure the warning and code coverage suppression file
 configure_file( 
@@ -37,40 +33,32 @@ if (UNIX)
 endif ()
 
 # Get Python
-find_package(PythonInterp)
-message(STATUS "Looking for Python found - ${PYTHONINTERP_FOUND}")
-if (PYTHONINTERP_FOUND)
-   message(STATUS "Using Python version ${PYTHON_VERSION_STRING}")
-endif()
+#find_package(PythonInterp)
+#message(STATUS "Looking for Python found - ${PYTHONINTERP_FOUND}")
+#if (PYTHONINTERP_FOUND)
+#   message(STATUS "Using Python version ${PYTHON_VERSION_STRING}")
+#endif()
 # --------------------------------------------------
 
-set(LAPACK_INSTALL_EXPORT_NAME lapack-targets)
+#set(LAPACK_INSTALL_EXPORT_NAME lapack-targets)
 
-macro(lapack_install_library lib)
-  install(TARGETS ${lib}
-    EXPORT ${LAPACK_INSTALL_EXPORT_NAME}
-    ARCHIVE DESTINATION lib${LIB_SUFFIX}
-    LIBRARY DESTINATION lib${LIB_SUFFIX}
-    RUNTIME DESTINATION bin
-  )
-endmacro()
+#macro(lapack_install_library lib)
+#  install(TARGETS ${lib}
+#    EXPORT ${LAPACK_INSTALL_EXPORT_NAME}
+#    ARCHIVE DESTINATION lib${LIB_SUFFIX}
+#    LIBRARY DESTINATION lib${LIB_SUFFIX}
+#    RUNTIME DESTINATION bin
+#  )
+#endmacro()
 
 # --------------------------------------------------
 # Testing
-
-enable_testing()
-include(CTest)
-enable_testing()
+if (BUILD_TESTING)
+    enable_testing()
+    include(CTest)
+    enable_testing()
+endif()
 # --------------------------------------------------
-
-# Organize output files.  On Windows this also keeps .dll files next
-# to the .exe files that need them, making tests easy to run.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/bin)
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/lib)
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/lib)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
 
 # --------------------------------------------------
 # Check for any necessary platform specific compiler flags
@@ -103,109 +91,109 @@ set(PKG_CONFIG_DIR ${libdir}/pkgconfig)
 # --------------------------------------------------
 # Subdirectories that need to be processed
 
-option(USE_OPTIMIZED_BLAS "Whether or not to use an optimized BLAS library instead of included netlib BLAS" OFF)
+#option(USE_OPTIMIZED_BLAS "Whether or not to use an optimized BLAS library instead of included netlib BLAS" OFF)
 
 
 # Check the usage of the user provided BLAS libraries
-if(BLAS_LIBRARIES)
-  include(CheckFortranFunctionExists)
-  set(CMAKE_REQUIRED_LIBRARIES ${BLAS_LIBRARIES})
-  CHECK_FORTRAN_FUNCTION_EXISTS("dgemm" BLAS_FOUND)
-  unset( CMAKE_REQUIRED_LIBRARIES )
-  if(BLAS_FOUND)
-    message(STATUS "--> BLAS supplied by user is WORKING, will use ${BLAS_LIBRARIES}.")
-  else(BLAS_FOUND)
-    message(ERROR "--> BLAS supplied by user is not WORKING, CANNOT USE ${BLAS_LIBRARIES}.")
-    message(ERROR "-->     Will use REFERENCE BLAS (by default)")
-    message(ERROR "-->     Or Correct your BLAS_LIBRARIES entry ")
-    message(ERROR "-->     Or Consider checking USE_OPTIMIZED_BLAS")
-  endif(BLAS_FOUND)
+#if(BLAS_LIBRARIES)
+#  include(CheckFortranFunctionExists)
+#  set(CMAKE_REQUIRED_LIBRARIES ${BLAS_LIBRARIES})
+#  CHECK_FORTRAN_FUNCTION_EXISTS("dgemm" BLAS_FOUND)
+#  unset( CMAKE_REQUIRED_LIBRARIES )
+#  if(BLAS_FOUND)
+#    message(STATUS "--> BLAS supplied by user is WORKING, will use ${BLAS_LIBRARIES}.")
+#  else(BLAS_FOUND)
+#    message(ERROR "--> BLAS supplied by user is not WORKING, CANNOT USE ${BLAS_LIBRARIES}.")
+#    message(ERROR "-->     Will use REFERENCE BLAS (by default)")
+#    message(ERROR "-->     Or Correct your BLAS_LIBRARIES entry ")
+#    message(ERROR "-->     Or Consider checking USE_OPTIMIZED_BLAS")
+#  endif(BLAS_FOUND)
 
 # User did not provide a BLAS Library but specified to search for one
-elseif( USE_OPTIMIZED_BLAS )
-  find_package( BLAS )
-endif (BLAS_LIBRARIES)
+#elseif( USE_OPTIMIZED_BLAS )
+#  find_package( BLAS )
+#endif (BLAS_LIBRARIES)
 
 # Neither user specified or optimized BLAS libraries can be used
-if(NOT BLAS_FOUND)
-  message(STATUS "Using supplied NETLIB BLAS implementation")
+#if(NOT BLAS_FOUND)
+#  message(STATUS "Using supplied NETLIB BLAS implementation")
   add_subdirectory(BLAS)
   set( BLAS_LIBRARIES blas )
-else()
-  set( CMAKE_EXE_LINKER_FLAGS 
-    "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
-    CACHE STRING "Linker flags for executables" FORCE)
-  set( CMAKE_MODULE_LINKER_FLAGS 
-    "${CMAKE_MODULE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
-    CACHE STRING "Linker flags for modules" FORCE)
-  set( CMAKE_SHARED_LINKER_FLAGS 
-    "${CMAKE_SHARED_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
-    CACHE STRING "Linker flags for shared libs" FORCE)
-endif( NOT BLAS_FOUND )
+#else()
+#  set( CMAKE_EXE_LINKER_FLAGS 
+#    "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
+#    CACHE STRING "Linker flags for executables" FORCE)
+#  set( CMAKE_MODULE_LINKER_FLAGS 
+#    "${CMAKE_MODULE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
+#    CACHE STRING "Linker flags for modules" FORCE)
+#  set( CMAKE_SHARED_LINKER_FLAGS 
+#    "${CMAKE_SHARED_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
+#    CACHE STRING "Linker flags for shared libs" FORCE)
+#endif( NOT BLAS_FOUND )
 
 
 # --------------------------------------------------
 # CBLAS
-option(CBLAS "Build CBLAS" OFF)
+#option(CBLAS "Build CBLAS" OFF)
 
-if(CBLAS)
-  add_subdirectory(CBLAS)
-endif(CBLAS)
+#if(CBLAS)
+#  add_subdirectory(CBLAS)
+#endif(CBLAS)
 
 # --------------------------------------------------
 # XBLAS
 
-option(USE_XBLAS "Build extended precision (needs XBLAS)" OFF)
-if (USE_XBLAS)
-  find_library(XBLAS_LIBRARY NAMES xblas)
-endif(USE_XBLAS)
+#option(USE_XBLAS "Build extended precision (needs XBLAS)" OFF)
+#if (USE_XBLAS)
+#  find_library(XBLAS_LIBRARY NAMES xblas)
+#endif(USE_XBLAS)
    
-option(USE_OPTIMIZED_LAPACK "Whether or not to use an optimized LAPACK library instead of included netlib LAPACK" OFF)
+#option(USE_OPTIMIZED_LAPACK "Whether or not to use an optimized LAPACK library instead of included netlib LAPACK" OFF)
 
 # --------------------------------------------------
 # LAPACK
 # User did not provide a LAPACK Library but specified to search for one
-if( USE_OPTIMIZED_LAPACK )
-  find_package( LAPACK )
-endif (USE_OPTIMIZED_LAPACK)
+#if( USE_OPTIMIZED_LAPACK )
+#  find_package( LAPACK )
+#endif (USE_OPTIMIZED_LAPACK)
 
 # Check the usage of the user provided or automatically found LAPACK libraries
-if(LAPACK_LIBRARIES)
-  include(CheckFortranFunctionExists)
-  set(CMAKE_REQUIRED_LIBRARIES ${LAPACK_LIBRARIES})
+#if(LAPACK_LIBRARIES)
+#  include(CheckFortranFunctionExists)
+#  set(CMAKE_REQUIRED_LIBRARIES ${LAPACK_LIBRARIES})
   # Check if new routine of 3.4.0 is in LAPACK_LIBRARIES
-  CHECK_FORTRAN_FUNCTION_EXISTS("dgeqrt" LATESTLAPACK_FOUND)
-  unset( CMAKE_REQUIRED_LIBRARIES )
-  if(LATESTLAPACK_FOUND)
-    message(STATUS "--> LAPACK supplied by user is WORKING, will use ${LAPACK_LIBRARIES}.")
-  else(LAPACK_FOUND)
-    message(ERROR "--> LAPACK supplied by user is not WORKING or is older than LAPACK 3.4.0, 	CANNOT USE ${LAPACK_LIBRARIES}.")
-    message(ERROR "-->     Will use REFERENCE LAPACK (by default)")
-    message(ERROR "-->     Or Correct your LAPACK_LIBRARIES entry ")
-    message(ERROR "-->     Or Consider checking USE_OPTIMIZED_LAPACK")
-  endif(LATESTLAPACK_FOUND)
-endif (LAPACK_LIBRARIES)
+#  CHECK_FORTRAN_FUNCTION_EXISTS("dgeqrt" LATESTLAPACK_FOUND)
+#  unset( CMAKE_REQUIRED_LIBRARIES )
+#  if(LATESTLAPACK_FOUND)
+#    message(STATUS "--> LAPACK supplied by user is WORKING, will use ${LAPACK_LIBRARIES}.")
+#  else(LAPACK_FOUND)
+#    message(ERROR "--> LAPACK supplied by user is not WORKING or is older than LAPACK 3.4.0, 	CANNOT USE ${LAPACK_LIBRARIES}.")
+#    message(ERROR "-->     Will use REFERENCE LAPACK (by default)")
+#    message(ERROR "-->     Or Correct your LAPACK_LIBRARIES entry ")
+#    message(ERROR "-->     Or Consider checking USE_OPTIMIZED_LAPACK")
+#  endif(LATESTLAPACK_FOUND)
+#endif (LAPACK_LIBRARIES)
 
 # Neither user specified or optimized LAPACK libraries can be used
-if(NOT LATESTLAPACK_FOUND)
-  message(STATUS "Using supplied NETLIB LAPACK implementation")
+#if(NOT LATESTLAPACK_FOUND)
+#  message(STATUS "Using supplied NETLIB LAPACK implementation")
   set( LAPACK_LIBRARIES lapack )
   option(BUILD_SINGLE "Build LAPACK Single Precision" ON)
   option(BUILD_DOUBLE "Build LAPACK Double Precision" ON)
   option(BUILD_COMPLEX "Build LAPACK Complex Precision" ON)
   option(BUILD_COMPLEX16 "Build LAPACK Double Complex Precision" ON)
   add_subdirectory(SRC)
-else()
-  set( CMAKE_EXE_LINKER_FLAGS 
-    "${CMAKE_EXE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
-    CACHE STRING "Linker flags for executables" FORCE)
-  set( CMAKE_MODULE_LINKER_FLAGS 
-    "${CMAKE_MODULE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
-    CACHE STRING "Linker flags for modules" FORCE)
-  set( CMAKE_SHARED_LINKER_FLAGS 
-    "${CMAKE_SHARED_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
-    CACHE STRING "Linker flags for shared libs" FORCE)
-endif( NOT LATESTLAPACK_FOUND )
+#else()
+#  set( CMAKE_EXE_LINKER_FLAGS 
+#    "${CMAKE_EXE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
+#    CACHE STRING "Linker flags for executables" FORCE)
+#  set( CMAKE_MODULE_LINKER_FLAGS 
+#    "${CMAKE_MODULE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
+#    CACHE STRING "Linker flags for modules" FORCE)
+#  set( CMAKE_SHARED_LINKER_FLAGS 
+#    "${CMAKE_SHARED_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
+#    CACHE STRING "Linker flags for shared libs" FORCE)
+#endif( NOT LATESTLAPACK_FOUND )
 
 if(BUILD_TESTING)
   add_subdirectory(TESTING)
@@ -213,72 +201,73 @@ endif(BUILD_TESTING)
 
 # --------------------------------------------------
 # LAPACKE
-option(LAPACKE "Build LAPACKE" OFF)
+#option(LAPACKE "Build LAPACKE" OFF)
 
 # LAPACKE has also the interface to some routines from tmglib,
 # if LAPACKE_WITH_TMG is selected, we need to add those routines to LAPACKE
-option(LAPACKE_WITH_TMG "Build LAPACKE with tmglib routines" ON)
-if (LAPACKE_WITH_TMG)
-  set(LAPACKE ON)
-  if(NOT BUILD_TESTING)
-     add_subdirectory(TESTING/MATGEN)
-  endif(NOT BUILD_TESTING)
-endif(LAPACKE_WITH_TMG)
+#option(LAPACKE_WITH_TMG "Build LAPACKE with tmglib routines" OFF)
+#if (LAPACKE_WITH_TMG)
+#  set(LAPACKE ON)
+#  if(NOT BUILD_TESTING)
+#     add_subdirectory(TESTING/MATGEN)
+#  endif(NOT BUILD_TESTING)
+#endif(LAPACKE_WITH_TMG)
 
-if(LAPACKE)
-  add_subdirectory(LAPACKE)
-endif(LAPACKE)
+#if(LAPACKE)
+#  add_subdirectory(LAPACKE)
+#endif(LAPACKE)
 
 # --------------------------------------------------
 # CPACK Packaging 
 
-SET(CPACK_PACKAGE_NAME "LAPACK")
-SET(CPACK_PACKAGE_VENDOR "University of Tennessee, Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "LAPACK- Linear Algebra Package")
-set(CPACK_PACKAGE_VERSION_MAJOR 3)
-set(CPACK_PACKAGE_VERSION_MINOR 5)
-set(CPACK_PACKAGE_VERSION_PATCH 0)
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "LAPACK")
-IF(WIN32 AND NOT UNIX)
-  # There is a bug in NSI that does not handle full unix paths properly. Make
-  # sure there is at least one set of four (4) backlasshes.
-  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\http://icl.cs.utk.edu/lapack-forum")
-  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.netlib.org/lapack")
-  SET(CPACK_NSIS_CONTACT "lapack@eecs.utk.edu")
-  SET(CPACK_NSIS_MODIFY_PATH ON)
-  SET(CPACK_NSIS_DISPLAY_NAME "LAPACK-${LAPACK_VERSION}")
-  set(CPACK_PACKAGE_RELOCATABLE "true")
-ELSE(WIN32 AND NOT UNIX)
-  SET(CPACK_GENERATOR "TGZ")
-  SET(CPACK_SOURCE_GENERATOR TGZ)
-  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "lapack-${LAPACK_VERSION}" )
-  SET(CPACK_SOURCE_IGNORE_FILES ~$ .svn ${CPACK_SOURCE_IGNORE_FILES} )
-ENDIF(WIN32 AND NOT UNIX)
-INCLUDE(CPack)
+#SET(CPACK_PACKAGE_NAME "LAPACK")
+#SET(CPACK_PACKAGE_VENDOR "University of Tennessee, Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd")
+#SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "LAPACK- Linear Algebra Package")
+#set(CPACK_PACKAGE_VERSION_MAJOR 3)
+#set(CPACK_PACKAGE_VERSION_MINOR 5)
+#set(CPACK_PACKAGE_VERSION_PATCH 0)
+#set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+#SET(CPACK_PACKAGE_INSTALL_DIRECTORY "LAPACK")
+#IF(WIN32 AND NOT UNIX)
+#  # There is a bug in NSI that does not handle full unix paths properly. Make
+#  # sure there is at least one set of four (4) backlasshes.
+#  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\http://icl.cs.utk.edu/lapack-forum")
+#  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.netlib.org/lapack")
+#  SET(CPACK_NSIS_CONTACT "lapack@eecs.utk.edu")
+#  SET(CPACK_NSIS_MODIFY_PATH ON)
+#  SET(CPACK_NSIS_DISPLAY_NAME "LAPACK-${LAPACK_VERSION}")
+#  set(CPACK_PACKAGE_RELOCATABLE "true")
+#ELSE(WIN32 AND NOT UNIX)
+#  SET(CPACK_GENERATOR "TGZ")
+#  SET(CPACK_SOURCE_GENERATOR TGZ)
+#  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "lapack-${LAPACK_VERSION}" )
+#  SET(CPACK_SOURCE_IGNORE_FILES ~$ .svn ${CPACK_SOURCE_IGNORE_FILES} )
+#ENDIF(WIN32 AND NOT UNIX)
+#INCLUDE(CPack)
 
 
 # --------------------------------------------------
 # By default static library
-OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF )
-OPTION(BUILD_STATIC_LIBS "Build static libraries" ON )
-#OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON )
+#SET(BUILD_SHARED_LIBS OFF)
+#SET(BUILD_STATIC_LIBS ON)
+#OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF )
+#OPTION(BUILD_STATIC_LIBS "Build static libraries" ON )
 
-if(NOT BLAS_FOUND)
-  set(ALL_TARGETS ${ALL_TARGETS} blas)
-endif(NOT BLAS_FOUND)
+#if(NOT BLAS_FOUND)
+#  set(ALL_TARGETS ${ALL_TARGETS} blas)
+#endif(NOT BLAS_FOUND)
 
-if(NOT LATESTLAPACK_FOUND)
-  set(ALL_TARGETS ${ALL_TARGETS} lapack)
-endif(NOT LATESTLAPACK_FOUND)
+#if(NOT LATESTLAPACK_FOUND)
+#  set(ALL_TARGETS ${ALL_TARGETS} lapack)
+#endif(NOT LATESTLAPACK_FOUND)
 
-if(BUILD_TESTING OR LAPACKE_WITH_TMG)
-  set(ALL_TARGETS ${ALL_TARGETS} tmglib)
-endif(BUILD_TESTING OR LAPACKE_WITH_TMG)
+#if(BUILD_TESTING OR LAPACKE_WITH_TMG)
+#  set(ALL_TARGETS ${ALL_TARGETS} tmglib)
+#endif(BUILD_TESTING OR LAPACKE_WITH_TMG)
 
 # Export lapack targets, not including lapacke, from the
 # install tree, if any.
-set(_lapack_config_install_guard_target "")
+#set(_lapack_config_install_guard_target "")
 #if(ALL_TARGETS)
 #  install(EXPORT lapack-targets
 #    DESTINATION lib/cmake/lapack-${LAPACK_VERSION})
@@ -289,17 +278,17 @@ set(_lapack_config_install_guard_target "")
 #endif()
 
 # Include cblas in targets exported from the build tree.
-if(CBLAS)
-  set(ALL_TARGETS ${ALL_TARGETS} cblas)
-endif(CBLAS)
+#if(CBLAS)
+#  set(ALL_TARGETS ${ALL_TARGETS} cblas)
+#endif(CBLAS)
 
 # Include lapacke in targets exported from the build tree.
-if(LAPACKE)
-  set(ALL_TARGETS ${ALL_TARGETS} lapacke)
-endif(LAPACKE)
+#if(LAPACKE)
+#  set(ALL_TARGETS ${ALL_TARGETS} lapacke)
+#endif(LAPACKE)
 
 # Export lapack and lapacke targets from the build tree, if any.
-set(_lapack_config_build_guard_target "")
+#set(_lapack_config_build_guard_target "")
 #if(ALL_TARGETS)
 #  export(TARGETS ${ALL_TARGETS} FILE lapack-targets.cmake)
 #
