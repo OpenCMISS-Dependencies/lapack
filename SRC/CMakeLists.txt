@@ -432,6 +432,6 @@ list(REMOVE_DUPLICATES ALLOBJ)
 
 add_library(lapack ${ALLOBJ} ${ALLXOBJ})
 set_target_properties(lapack PROPERTIES OUTPUT_NAME lapack-${LAPACK_VERSION})
-target_link_libraries(lapack PUBLIC blas ${XBLAS_LIBRARY})
+target_link_libraries(lapack PUBLIC blas ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES} ${XBLAS_LIBRARY})
 
 export(TARGETS lapack FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/lapack-${LAPACK_VERSION}/lapack-config.cmake)

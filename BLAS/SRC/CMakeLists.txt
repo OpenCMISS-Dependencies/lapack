@@ -137,10 +137,11 @@ endif()
   
   
 add_library(blas ${ALLOBJ})
-if(UNIX)
-  target_link_libraries(blas m)
-endif()
-target_link_libraries(blas)
+# m is contained in Fortran implicit libraries
+#if(UNIX)
+#  target_link_libraries(blas m)
+#endif()
+target_link_libraries(blas PUBLIC ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES})
 
 export(TARGETS blas FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/blas-config.cmake)
 #lapack_install_library(blas)
