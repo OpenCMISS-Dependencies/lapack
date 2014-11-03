@@ -122,22 +122,22 @@ macro(add_eig_executable name )
   target_link_libraries(${name} tmglib ${LAPACK_LIBRARIES})
 endmacro(add_eig_executable)
 
-if (BUILD_SINGLE)
+if (BUILD_PRECISION MATCHES [s])
 add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST} 
   ${SECOND_SRC} )
 endif()
 
-if (BUILD_COMPLEX)
+if (BUILD_PRECISION MATCHES [c])
 add_eig_executable(xeigtstc ${CEIGTST} ${SCIGTST} ${AEIGTST}
   ${SECOND_SRC} )
 endif()
 
-if (BUILD_DOUBLE)
+if (BUILD_PRECISION MATCHES [d])
 add_eig_executable(xeigtstd ${DEIGTST} ${DZIGTST} ${AEIGTST} 
   ${DSECOND_SRC} )
 endif()
 
-if (BUILD_COMPLEX16)
+if (BUILD_PRECISION MATCHES [z])
 add_eig_executable(xeigtstz ${ZEIGTST} ${DZIGTST} ${AEIGTST}
   ${DSECOND_SRC} )
 endif()

@@ -22,7 +22,7 @@ macro(add_lapack_test output input target)
   endif()
 endmacro(add_lapack_test)
 
-if (BUILD_SINGLE)
+if (BUILD_PRECISION MATCHES [s])
 add_lapack_test(stest.out stest.in xlintsts)
 #
 # ======== SINGLE RFP LIN TESTS ========================
@@ -89,7 +89,7 @@ add_lapack_test(scsd.out csd.in xeigtsts)
 add_lapack_test(slse.out lse.in xeigtsts)
 endif()
 
-if (BUILD_DOUBLE)
+if (BUILD_PRECISION MATCHES [d])
 #
 # ======== DOUBLE LIN TESTS ===========================
 add_lapack_test(dtest.out dtest.in xlintstd)
@@ -156,7 +156,7 @@ add_lapack_test(dcsd.out csd.in xeigtstd)
 add_lapack_test(dlse.out lse.in xeigtstd)
 endif()
 
-if (BUILD_COMPLEX)
+if (BUILD_PRECISION MATCHES [c])
 add_lapack_test(ctest.out ctest.in xlintstc)
 #
 # ======== COMPLEX RFP LIN TESTS ========================
@@ -221,7 +221,7 @@ add_lapack_test(ccsd.out csd.in xeigtstc)
 add_lapack_test(clse.out lse.in xeigtstc)
 endif()
 
-if (BUILD_COMPLEX16)
+if (BUILD_PRECISION MATCHES [z])
 #
 # ======== COMPLEX16 LIN TESTS ========================
 add_lapack_test(ztest.out ztest.in xlintstz)
@@ -289,8 +289,8 @@ add_lapack_test(zlse.out lse.in xeigtstz)
 endif()
 
 
-if (BUILD_SIMPLE)
-    if (BUILD_DOUBLE)
+if (BUILD_PRECISION MATCHES [s])
+    if (BUILD_PRECISION MATCHES [d])
 #
 # ======== SINGLE-DOUBLE PROTO LIN TESTS ==============
         add_lapack_test(dstest.out dstest.in xlintstds)
@@ -298,8 +298,8 @@ if (BUILD_SIMPLE)
 endif()
 
 
-if (BUILD_COMPLEX)
-    if (BUILD_COMPLEX16)
+if (BUILD_PRECISION MATCHES [c])
+    if (BUILD_PRECISION MATCHES [z])
 #
 # ======== COMPLEX-COMPLEX16 LIN TESTS ========================
         add_lapack_test(zctest.out zctest.in xlintstzc)

@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
-PROJECT(LAPACK VERSION 3.5.0 LANGUAGES Fortran)
+PROJECT(LAPACK VERSION 3.5.0 LANGUAGES Fortran C)
 
-if (OPENCMISS_DEPENDENCIES_LIBRARIES)
-    SET(CMAKE_PREFIX_PATH ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR} ${CMAKE_PREFIX_PATH})
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENCMISS_DEPENDENCIES_LIBRARIES})
-else()
-    SET(CMAKE_PREFIX_PATH ../cmake ${CMAKE_PREFIX_PATH})
-    SET(OPENCMISS_DEPENDENCIES_CONFIGS_DIR ${CMAKE_CURRENT_BINARY_DIR})
-    SET(BUILD_TESTING ON)
-endif()
+option(BUILD_TESTS "${PROJECT_NAME} - Build tests" ON)
+set(BUILD_PRECISION sdcz CACHE STRING "${PROJECT_NAME} - Build precisions (sdcz)")
+
+# Always build all precisions,
+# as the different modules have test routines
+# wit suitesparse library has demo-code for both that is hard to separate
+#set(BUILD_PRECISION "${BUILD_PRECISION}dz")
+set(BUILD_PRECISION sdcz)
+
 
 # Configure the warning and code coverage suppression file
 configure_file( 
@@ -40,30 +41,16 @@ endif ()
 #endif()
 # --------------------------------------------------
 
-#set(LAPACK_INSTALL_EXPORT_NAME lapack-targets)
-
-#macro(lapack_install_library lib)
-#  install(TARGETS ${lib}
-#    EXPORT ${LAPACK_INSTALL_EXPORT_NAME}
-#    ARCHIVE DESTINATION lib${LIB_SUFFIX}
-#    LIBRARY DESTINATION lib${LIB_SUFFIX}
-#    RUNTIME DESTINATION bin
-#  )
-#endmacro()
-
-# --------------------------------------------------
-# Testing
-if (BUILD_TESTING)
-    enable_testing()
-    include(CTest)
-    enable_testing()
-endif()
-# --------------------------------------------------
-
 # --------------------------------------------------
 # Check for any necessary platform specific compiler flags
 include( CheckLAPACKCompilerFlags )
 CheckLAPACKCompilerFlags()
+
+# Old way to detect mangling
+#include(FortranMangling)
+#FORTRAN_MANGLING(CDEFS)
+#set(CDEFS ${CDEFS} CACHE STRING "Fortran Mangling" FORCE)
+#MESSAGE(STATUS "Fortran Mangling: -D${CDEFS}")
 
 # --------------------------------------------------
 # Check second function
@@ -82,11 +69,6 @@ set(DSECOND_SRC  ${LAPACK_SOURCE_DIR}/INSTALL/dsecnd_${TIME_FUNC}.f)
 set(prefix ${CMAKE_INSTALL_PREFIX})
 set(libdir ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
 set(PKG_CONFIG_DIR ${libdir}/pkgconfig)
-
-# --------------------------------------------------
-# Precision to build
-# By default all precisions are generated
-
 
 # --------------------------------------------------
 # Subdirectories that need to be processed
@@ -178,10 +160,6 @@ set(PKG_CONFIG_DIR ${libdir}/pkgconfig)
 #if(NOT LATESTLAPACK_FOUND)
 #  message(STATUS "Using supplied NETLIB LAPACK implementation")
   set( LAPACK_LIBRARIES lapack )
-  option(BUILD_SINGLE "Build LAPACK Single Precision" ON)
-  option(BUILD_DOUBLE "Build LAPACK Double Precision" ON)
-  option(BUILD_COMPLEX "Build LAPACK Complex Precision" ON)
-  option(BUILD_COMPLEX16 "Build LAPACK Double Complex Precision" ON)
   add_subdirectory(SRC)
 #else()
 #  set( CMAKE_EXE_LINKER_FLAGS 
@@ -195,9 +173,11 @@ set(PKG_CONFIG_DIR ${libdir}/pkgconfig)
 #    CACHE STRING "Linker flags for shared libs" FORCE)
 #endif( NOT LATESTLAPACK_FOUND )
 
-if(BUILD_TESTING)
+if(BUILD_TESTS)
+  enable_testing()
+  include(CTest)
   add_subdirectory(TESTING)
-endif(BUILD_TESTING)
+endif(BUILD_TESTS)
 
 # --------------------------------------------------
 # LAPACKE
@@ -208,9 +188,9 @@ endif(BUILD_TESTING)
 #option(LAPACKE_WITH_TMG "Build LAPACKE with tmglib routines" OFF)
 #if (LAPACKE_WITH_TMG)
 #  set(LAPACKE ON)
-#  if(NOT BUILD_TESTING)
+#  if(NOT BUILD_TESTS)
 #     add_subdirectory(TESTING/MATGEN)
-#  endif(NOT BUILD_TESTING)
+#  endif(NOT BUILD_TESTS)
 #endif(LAPACKE_WITH_TMG)
 
 #if(LAPACKE)
@@ -261,9 +241,9 @@ endif(BUILD_TESTING)
 #  set(ALL_TARGETS ${ALL_TARGETS} lapack)
 #endif(NOT LATESTLAPACK_FOUND)
 
-#if(BUILD_TESTING OR LAPACKE_WITH_TMG)
+#if(BUILD_TESTS OR LAPACKE_WITH_TMG)
 #  set(ALL_TARGETS ${ALL_TARGETS} tmglib)
-#endif(BUILD_TESTING OR LAPACKE_WITH_TMG)
+#endif(BUILD_TESTS OR LAPACKE_WITH_TMG)
 
 # Export lapack targets, not including lapacke, from the
 # install tree, if any.

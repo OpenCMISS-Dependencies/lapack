@@ -51,16 +51,16 @@ set(ZMATGEN  zlatms.f zlatme.f zlatmr.f zlatmt.f
   zlagge.f zlaghe.f zlagsy.f zlakf2.f zlarge.f zlaror.f zlarot.f 
   zlatm1.f zlarnd.f zlatm2.f zlatm3.f zlatm5.f zlatm6.f zlahilb.f dlatm7.f)
 
-if(BUILD_SINGLE)
+if(BUILD_PRECISION MATCHES [s])
   set(ALLOBJ ${SMATGEN} ${SCATGEN})
 endif()
-if(BUILD_DOUBLE)
+if(BUILD_PRECISION MATCHES [d])
   set(ALLOBJ ${ALLOBJ} ${DMATGEN} ${DZATGEN})
 endif()
-if(BUILD_COMPLEX)
+if(BUILD_PRECISION MATCHES [c])
   set(ALLOBJ  ${ALLOBJ} ${CMATGEN} ${SCATGEN})
 endif()
-if(BUILD_COMPLEX16)
+if(BUILD_PRECISION MATCHES [z])
   set(ALLOBJ ${ALLOBJ} ${ZMATGEN} ${DZATGEN})
 endif()
 
@@ -70,7 +70,6 @@ set(ALLOBJ ${SMATGEN} ${CMATGEN} ${SCATGEN} ${DMATGEN} ${ZMATGEN}
 else()
   list(REMOVE_DUPLICATES ALLOBJ)
 endif()
-add_library(tmglib ${ALLOBJ} )
-target_link_libraries(tmglib PUBLIC lapack)
-#lapack_install_library(tmglib)
-export(TARGETS tmglib FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/tmglib-config.cmake)
+add_library(tmglib ${ALLOBJ})
+target_link_libraries(tmglib PRIVATE lapack)
+

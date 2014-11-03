@@ -9,16 +9,6 @@ FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/lapacke_mangling.h
                           MACRO_NAMESPACE "LAPACK_"
                           SYMBOL_NAMESPACE "LAPACK_" )
 
-# Old way to detect mangling
-#include(FortranMangling)
-#FORTRAN_MANGLING(CDEFS)
-#set(CDEFS ${CDEFS} CACHE STRING "Fortran Mangling" FORCE)
-#MESSAGE(STATUS "=========")
-
-# --------------------------------------------------
-# Compiler Flags
-#ADD_DEFINITIONS( "-D${CDEFS}")
-
 if (WIN32 AND NOT UNIX)
  ADD_DEFINITIONS(-DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE)
  MESSAGE (STATUS "Windows BUILD")
@@ -60,9 +50,9 @@ endif(USE_XBLAS)
 lapack_install_library(lapacke)
 INSTALL( FILES ${LAPACKE_INCLUDE} DESTINATION include )
 
-if(BUILD_TESTING)
+if(BUILD_TESTS)
    add_subdirectory(example)
-endif(BUILD_TESTING)
+endif(BUILD_TESTS)
 
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapacke.pc.in ${CMAKE_CURRENT_BINARY_DIR}/lapacke.pc)

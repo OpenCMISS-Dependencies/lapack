@@ -114,34 +114,35 @@ set(DBLAS3 dgemm.f dsymm.f dsyrk.f dsyr2k.f dtrmm.f dtrsm.f)
 set(ZBLAS3 zgemm.f zsymm.f zsyrk.f zsyr2k.f ztrmm.f ztrsm.f 
 	zhemm.f zherk.f zher2k.f)
 # default build all of it
-set(ALLOBJ ${SBLAS1} ${SBLAS2} ${SBLAS3} ${DBLAS1} ${DBLAS2} ${DBLAS3}	
-	${CBLAS1} ${CBLAS2} ${CBLAS3} ${ZBLAS1} 
-	${ZBLAS2} ${ZBLAS3} ${ALLBLAS})
+#set(ALLOBJ ${SBLAS1} ${SBLAS2} ${SBLAS3} ${DBLAS1} ${DBLAS2} ${DBLAS3}
+#	${CBLAS1} ${CBLAS2} ${CBLAS3} ${ZBLAS1} 
+#	${ZBLAS2} ${ZBLAS3} ${ALLBLAS})
 
-if(BLAS_SINGLE)
-  set(ALLOBJ ${SBLAS1} ${ALLBLAS} 
-	${SBLAS2} ${SBLAS3})
+set(ALLOBJ )
+if(BUILD_PRECISION MATCHES "[s]")
+  list(APPEND ALLOBJ ${SBLAS1} ${SBLAS2} ${SBLAS3})
+  message(STATUS "Building BLAS single precision")	 
 endif()
-if(BLAS_DOUBLE)
-  set(ALLOBJ ${DBLAS1} ${ALLBLAS} 
-	${DBLAS2} ${DBLAS3})
+if(BUILD_PRECISION MATCHES "[d]")
+  list(APPEND ALLOBJ ${DBLAS1} ${DBLAS2} ${DBLAS3})
+  message(STATUS "Building BLAS double precision")
 endif()
-if(BLAS_COMPLEX)
-  set(ALLOBJ  ${BLASLIB} ${CBLAS1} ${CB1AUX} 
-	${ALLBLAS} ${CBLAS2})
+if(BUILD_PRECISION MATCHES "[c]")
+  list(APPEND ALLOBJ ${CBLAS1} ${CB1AUX} ${CBLAS2} ${CBLAS3})
+  message(STATUS "Building BLAS complex precision")
 endif()
-if(BLAS_COMPLEX16)
-  set(ALLOBJ  ${BLASLIB} ${ZBLAS1} ${ZB1AUX} 
-	${ALLBLAS} ${ZBLAS2} ${ZBLAS3})
+if(BUILD_PRECISION MATCHES "[z]")
+  list(APPEND ALLOBJ ${ZBLAS1} ${ZB1AUX} ${ZBLAS2} ${ZBLAS3})
+  message(STATUS "Building BLAS complex double precision")
 endif()
   
   
-add_library(blas ${ALLOBJ})
+add_library(blas ${ALLOBJ} ${ALLBLAS})
 # m is contained in Fortran implicit libraries
 #if(UNIX)
 #  target_link_libraries(blas m)
 #endif()
 target_link_libraries(blas PUBLIC ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES})
 
-export(TARGETS blas FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/blas-config.cmake)
-#lapack_install_library(blas)
+install(TARGETS blas EXPORT blas-config DESTINATION lib)
+install(EXPORT blas-config DESTINATION lib/cmake)

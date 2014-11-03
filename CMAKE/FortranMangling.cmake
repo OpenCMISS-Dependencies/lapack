@@ -42,7 +42,7 @@ MESSAGE(STATUS "Testing FORTRAN_MANGLING")
        
 MESSAGE(STATUS "Compiling Finface.f...")
 
-    execute_process ( COMMAND  ${CMAKE_Fortran_COMPILER} ${F77_OPTION_COMPILE} ${PROJECT_SOURCE_DIR}/lapacke/mangling/Fintface.f
+    execute_process ( COMMAND  ${CMAKE_Fortran_COMPILER} ${F77_OPTION_COMPILE} ${PROJECT_SOURCE_DIR}/LAPACKE/mangling/Fintface.f
       WORKING_DIRECTORY  ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp
       OUTPUT_VARIABLE    OUTPUT
       RESULT_VARIABLE    RESULT
@@ -51,23 +51,22 @@ MESSAGE(STATUS "Compiling Finface.f...")
     if(RESULT EQUAL 0)
     MESSAGE(STATUS "Compiling Finface.f successful")
     else()
-    MESSAGE(FATAL_ERROR " Compiling Finface.f FAILED")
-    MESSAGE(FATAL_ERROR " Error:\n ${ERROR}")
+        MESSAGE(STATUS " Error:\n ${ERROR}")
+        MESSAGE(FATAL_ERROR " Compiling Finface.f FAILED")
     endif()
 
 MESSAGE(STATUS "Compiling Cintface.c...")
-
-    execute_process ( COMMAND  ${CMAKE_C_COMPILER} ${F77_OPTION_COMPILE} ${PROJECT_SOURCE_DIR}/lapacke/mangling/Cintface.c
+    execute_process ( COMMAND  ${CMAKE_C_COMPILER} ${F77_OPTION_COMPILE} ${PROJECT_SOURCE_DIR}/LAPACKE/mangling/Cintface.c
       WORKING_DIRECTORY  ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp
       OUTPUT_VARIABLE    OUTPUT
       RESULT_VARIABLE    RESULT
       ERROR_VARIABLE     ERROR)
 
     if(RESULT EQUAL 0)
-    MESSAGE(STATUS "Compiling Cintface.c successful")
+        MESSAGE(STATUS "Compiling Cintface.c successful")
     else()
-    MESSAGE(FATAL_ERROR " Compiling Cintface.c FAILED")
-    MESSAGE(FATAL_ERROR " Error:\n ${ERROR}")
+        MESSAGE(STATUS " Error:\n ${ERROR}")
+        MESSAGE(FATAL_ERROR " Compiling Cintface.c FAILED")
     endif()
 
 MESSAGE(STATUS "Linking Finface.f and Cintface.c...")

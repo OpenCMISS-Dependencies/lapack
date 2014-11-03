@@ -50,7 +50,7 @@ SET( ZTESTL3O  c_zblas3.c c_z3chke.c auxiliary.c c_xerbla.c)
 
 
 
-if(BUILD_SINGLE)
+if(BUILD_PRECISION MATCHES [s])
   add_executable(xscblat1 c_sblat1.f ${STESTL1O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
   add_executable(xscblat2 c_sblat2.f ${STESTL2O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
   add_executable(xscblat3 c_sblat3.f ${STESTL3O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
@@ -65,7 +65,7 @@ if(BUILD_SINGLE)
  
 endif()
 
-if(BUILD_DOUBLE)
+if(BUILD_PRECISION MATCHES [d])
 
   add_executable(xdcblat1 c_dblat1.f ${DTESTL1O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
   add_executable(xdcblat2 c_dblat2.f ${DTESTL2O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
@@ -81,7 +81,7 @@ if(BUILD_DOUBLE)
 
 endif()
 
-if(BUILD_COMPLEX)
+if(BUILD_PRECISION MATCHES [c])
 
   add_executable(xccblat1 c_cblat1.f ${CTESTL1O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
   add_executable(xccblat2 c_cblat2.f ${CTESTL2O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
@@ -97,7 +97,7 @@ if(BUILD_COMPLEX)
 
 endif()
 
-if(BUILD_COMPLEX16)
+if(BUILD_PRECISION MATCHES [z])
 
   add_executable(xzcblat1 c_zblat1.f ${ZTESTL1O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)
   add_executable(xzcblat2 c_zblat2.f ${ZTESTL2O} ${LAPACK_BINARY_DIR}/include/cblas_test.h)

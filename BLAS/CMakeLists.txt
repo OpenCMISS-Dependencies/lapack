@@ -1,9 +1,8 @@
+cmake_minimum_required(VERSION 3.0)
+PROJECT(BLAS VERSION 3.5.0 LANGUAGES Fortran)
+
 add_subdirectory(SRC)
-if(BUILD_TESTING)
+if(BUILD_TESTS)
+    enable_testing()
     add_subdirectory(TESTING)
-endif(BUILD_TESTING)
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/blas.pc.in ${CMAKE_CURRENT_BINARY_DIR}/blas.pc)
-#install(FILES
-#  ${CMAKE_CURRENT_BINARY_DIR}/blas.pc
-#  DESTINATION ${PKG_CONFIG_DIR}
-# )
+endif(BUILD_TESTS)
