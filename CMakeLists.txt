@@ -225,14 +225,6 @@ endif(BUILD_TESTS)
 #ENDIF(WIN32 AND NOT UNIX)
 #INCLUDE(CPack)
 
-
-# --------------------------------------------------
-# By default static library
-#SET(BUILD_SHARED_LIBS OFF)
-#SET(BUILD_STATIC_LIBS ON)
-#OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF )
-#OPTION(BUILD_STATIC_LIBS "Build static libraries" ON )
-
 #if(NOT BLAS_FOUND)
 #  set(ALL_TARGETS ${ALL_TARGETS} blas)
 #endif(NOT BLAS_FOUND)
