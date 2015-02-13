@@ -198,34 +198,6 @@ endif(BUILD_TESTS)
 #  add_subdirectory(LAPACKE)
 #endif(LAPACKE)
 
-# --------------------------------------------------
-# CPACK Packaging 
-
-#SET(CPACK_PACKAGE_NAME "LAPACK")
-#SET(CPACK_PACKAGE_VENDOR "University of Tennessee, Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd")
-#SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "LAPACK- Linear Algebra Package")
-#set(CPACK_PACKAGE_VERSION_MAJOR 3)
-#set(CPACK_PACKAGE_VERSION_MINOR 5)
-#set(CPACK_PACKAGE_VERSION_PATCH 0)
-#set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-#SET(CPACK_PACKAGE_INSTALL_DIRECTORY "LAPACK")
-#IF(WIN32 AND NOT UNIX)
-#  # There is a bug in NSI that does not handle full unix paths properly. Make
-#  # sure there is at least one set of four (4) backlasshes.
-#  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\http://icl.cs.utk.edu/lapack-forum")
-#  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.netlib.org/lapack")
-#  SET(CPACK_NSIS_CONTACT "lapack@eecs.utk.edu")
-#  SET(CPACK_NSIS_MODIFY_PATH ON)
-#  SET(CPACK_NSIS_DISPLAY_NAME "LAPACK-${LAPACK_VERSION}")
-#  set(CPACK_PACKAGE_RELOCATABLE "true")
-#ELSE(WIN32 AND NOT UNIX)
-#  SET(CPACK_GENERATOR "TGZ")
-#  SET(CPACK_SOURCE_GENERATOR TGZ)
-#  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "lapack-${LAPACK_VERSION}" )
-#  SET(CPACK_SOURCE_IGNORE_FILES ~$ .svn ${CPACK_SOURCE_IGNORE_FILES} )
-#ENDIF(WIN32 AND NOT UNIX)
-#INCLUDE(CPack)
-
 #if(NOT BLAS_FOUND)
 #  set(ALL_TARGETS ${ALL_TARGETS} blas)
 #endif(NOT BLAS_FOUND)
@@ -243,49 +215,9 @@ endif(BUILD_TESTS)
 #set(_lapack_config_install_guard_target "")
 #if(ALL_TARGETS)
 #  install(EXPORT lapack-targets
-#    DESTINATION lib/cmake/lapack-${LAPACK_VERSION})
+#    DESTINATION ${PACKAGE_CONFIG_DIR}/lapack-${LAPACK_VERSION})
 
   # Choose one of the lapack targets to use as a guard for
   # lapack-config.cmake to load targets from the install tree.
 #  list(GET ALL_TARGETS 0 _lapack_config_install_guard_target)
 #endif()
-
-# Include cblas in targets exported from the build tree.
-#if(CBLAS)
-#  set(ALL_TARGETS ${ALL_TARGETS} cblas)
-#endif(CBLAS)
-
-# Include lapacke in targets exported from the build tree.
-#if(LAPACKE)
-#  set(ALL_TARGETS ${ALL_TARGETS} lapacke)
-#endif(LAPACKE)
-
-# Export lapack and lapacke targets from the build tree, if any.
-#set(_lapack_config_build_guard_target "")
-#if(ALL_TARGETS)
-#  export(TARGETS ${ALL_TARGETS} FILE lapack-targets.cmake)
-#
-#  # Choose one of the lapack or lapacke targets to use as a guard
-#  # for lapack-config.cmake to load targets from the build tree.
-#  list(GET ALL_TARGETS 0 _lapack_config_build_guard_target)
-#endif()
-
-#configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-version.cmake.in
-#  ${LAPACK_BINARY_DIR}/lapack-config-version.cmake @ONLY)
-#configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-build.cmake.in
-#  ${LAPACK_BINARY_DIR}/lapack-config.cmake @ONLY)
-
-
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapack.pc.in ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc)
-#  install(FILES
-#  ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc
-#  DESTINATION ${PKG_CONFIG_DIR}
-#   )
-
-#configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-install.cmake.in
-#  ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake @ONLY)
-#install(FILES
-#  ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake
-#  ${LAPACK_BINARY_DIR}/lapack-config-version.cmake
-#  DESTINATION lib/cmake/lapack-${LAPACK_VERSION}
-#  )

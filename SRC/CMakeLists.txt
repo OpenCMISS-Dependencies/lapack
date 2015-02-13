@@ -438,4 +438,4 @@ install(EXPORT lapack-config DESTINATION ${PACKAGE_CONFIG_DIR})
 include(CMakePackageConfigHelpers)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/lapack-config-version.cmake COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lapack-config-version.cmake
-    DESTINATION lib/cmake)
+    DESTINATION ${PACKAGE_CONFIG_DIR})
