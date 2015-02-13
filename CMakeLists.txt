@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 PROJECT(LAPACK VERSION 3.5.0 LANGUAGES Fortran C)
 
 option(BUILD_TESTS "${PROJECT_NAME} - Build tests" ON)
+option(PACKAGE_CONFIG_DIR "Directory for package config files (relative to CMAKE_INSTALL_PREFIX)" "lib/cmake")
 set(BUILD_PRECISION sdcz CACHE STRING "${PROJECT_NAME} - Build precisions (sdcz)")
 
 # Always build all precisions,

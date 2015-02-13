@@ -434,7 +434,7 @@ set_target_properties(lapack PROPERTIES OUTPUT_NAME lapack-${LAPACK_VERSION})
 target_link_libraries(lapack PUBLIC blas ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES} ${XBLAS_LIBRARY})
 
 install(TARGETS lapack EXPORT lapack-config DESTINATION lib)
-install(EXPORT lapack-config DESTINATION lib/cmake)
+install(EXPORT lapack-config DESTINATION ${PACKAGE_CONFIG_DIR})
 include(CMakePackageConfigHelpers)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/lapack-config-version.cmake COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lapack-config-version.cmake

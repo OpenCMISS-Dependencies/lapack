@@ -145,7 +145,7 @@ add_library(blas ${ALLOBJ} ${ALLBLAS})
 target_link_libraries(blas PUBLIC ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES})
 
 install(TARGETS blas EXPORT blas-config DESTINATION lib)
-install(EXPORT blas-config DESTINATION lib/cmake)
+install(EXPORT blas-config DESTINATION ${PACKAGE_CONFIG_DIR})
 include(CMakePackageConfigHelpers)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/blas-config-version.cmake
     COMPATIBILITY AnyNewerVersion)
