@@ -432,6 +432,10 @@ list(REMOVE_DUPLICATES ALLOBJ)
 add_library(lapack ${ALLOBJ} ${ALLXOBJ})
 set_target_properties(lapack PROPERTIES OUTPUT_NAME lapack-${LAPACK_VERSION})
 target_link_libraries(lapack PUBLIC blas ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES} ${XBLAS_LIBRARY})
+# Fix: on MinGW CMake somehow does not pick up the CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES
+if (MINGW AND CMAKE_COMPILER_IS_GNUG77)
+    target_link_libraries(lapack PUBLIC gfortran)    
+endif()
 
 install(TARGETS lapack EXPORT lapack-config DESTINATION lib)
 install(EXPORT lapack-config DESTINATION ${PACKAGE_CONFIG_DIR})
