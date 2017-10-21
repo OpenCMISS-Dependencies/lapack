@@ -144,10 +144,17 @@ add_library(blas ${ALLOBJ} ${ALLBLAS})
 #endif()
 target_link_libraries(blas PUBLIC ${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES})
 
-install(TARGETS blas EXPORT blas-config DESTINATION lib)
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/blas-config.cmake
+    "get_filename_component(_DIR \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)\r\n"
+    "include(\${_DIR}/blas-config-version.cmake)\r\n"
+    "include(\${_DIR}/lapack-config.cmake)\r\n"
+    "unset(_DIR)\r\n"
+)
 install(TARGETS blas EXPORT lapack-config DESTINATION lib)
-install(EXPORT blas-config DESTINATION ${PACKAGE_CONFIG_DIR})
 include(CMakePackageConfigHelpers)
-WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/blas-config-version.cmake
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/blas-config-version.cmake
     COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/blas-config-version.cmake DESTINATION ${PACKAGE_CONFIG_DIR})
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/blas-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/blas-config-version.cmake
+    DESTINATION ${PACKAGE_CONFIG_DIR})
